@@ -32,18 +32,23 @@ def counterfeit(coins):
 
     if (w1 > w2 and w1 > w3) or (w2 > w1 and w2 > w3) or (w3 > w1 and w3 > w2): 
         print("Coin is heavier")
+		return 1
     elif (w1 < w2 and w1 < w3) or (w2 < w1 and w2 < w3) or (w3 < w1 and w3 < w2):
         print("Coin is lighter")
+		return -1
     else:
         s4 = s1[0: len(r)]
         w4 = sum(i for i in s4)
         wr = sum(i for i in r)
         if(w4 < wr):
             print("Coin is heavier")
+			return 1
         elif(w4 > wr):
             print("Coin is lighter")
+			return -1
         else:
             print("No fake coin")
+			return 0
 
 def findStack(coins):
     heaviest = 0
@@ -130,18 +135,29 @@ def b_three_search(list, first, last):
     
     print("/nNum1", num1, "Num2", num2, "Num3", num3)
     
+def random():
+	updown = random.random()
+    if(updown > .5):
+        return true
+    else:
+        return false
 
 if __name__ == '__main__':
     size = 1000000
     weight = 10
-    updown = random.random()
-    if(updown > .5):
+    if(random()):
         fakeWeight = weight + 1
     else:
         fakeWeight = weight - 1
 
-        print("Real:", weight, "Fake:", fakeWeight)
-        counterfeit(createCoins(size, weight, fakeWeight))
-        findStack(createCoins(size, weight, weight + 1))
-        print("Binary Search: ", binary_search(createCoins(size, weight, weight - 1), 0, size - 1))
-        b_three_search(createCoins(size, weight, weight -1), 0, size - 1)
+	print("Real:", weight, "Fake:", fakeWeight)
+	counterfeit(createCoins(size, weight, fakeWeight))
+	findStack(createCoins(size, weight, weight + 1))
+	print("Binary Search: ", binary_search(createCoins(size, weight, weight - 1), 0, size - 1))
+	b_three_search(createCoins(size, weight, weight -1), 0, size - 1)
+	
+	# Create an array that randomly has a fake coin at a random position
+	if(random()):
+		fakeWeight = weight
+	else:
+		fakeWeight = weight + 1
