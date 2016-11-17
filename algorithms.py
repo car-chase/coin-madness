@@ -1,6 +1,7 @@
 import random
 import math
 from _ast import Num
+from time import sleep
 
 '''to do add a bool parameter'''
 def createCoins(size, weight, fakeWeight, has_fake):
@@ -135,9 +136,10 @@ def binary_search(list, first, last, fake):
                 return num2
     
     return num1
-    
+
 def b_tree_search(list, first, last):
     
+    #check if the range is small enough to compare and return
     if(last - first == 2):
         if(list[first] < list[first + 1]):
             if(list[first] < list[last]):
@@ -169,32 +171,37 @@ def b_tree_search(list, first, last):
     has_one = False
     has_two = False
     
+    #check if the range is a multiple of 3
     if(last - first) % 3 == 1:
         has_two = True
         num2 = first
         first += 1
         num3 = first
         first += 1
-        print("Num2: ", num2, "\tNum3: ", num3)
+        #print("Num2: ", num2, "\tNum3: ", num3)
     
     elif(last - first) % 3 == 0:
         has_one = True
         num2 = first
         first += 1
-        print("Num2: ", num2)
+        #print("Num2: ", num2)
     
+    #find middle values of the index range
     middle1 = int(last - (last - first) / 3 * 2)
     middle2 = int(last - (last - first - 1) / 3 * 2)
     middle3 = int(last - (last - first) / 3)
     middle4 = int(last - (last - first - 2) / 3)
-    print("First: ", first, "\tmiddle1: ", middle1, "\nmiddle2: ", middle2, "\tmiddle3: ", middle3, "\nmiddle4: ", middle4, "\tLast: ", last)
+    #print("First: ", first, "\tmiddle1: ", middle1, "\nmiddle2: ", middle2, "\tmiddle3: ", middle3, "\nmiddle4: ", middle4, "\tLast: ", last)
     
+    #sum the list values including and between the two index ranges
     sum1 = sumList(list, first, middle1)
     sum2 = sumList(list, middle2, middle3)
     sum3 = sumList(list, middle4, last)
     
-    print("Sum1: ", sum1, "\tSum2: ", sum2, "\tSum3: ", sum3)
+    #print("Sum1: ", sum1, "\tSum2: ", sum2, "\tSum3: ", sum3)
     
+    #determine which sum value is smaller (if one is) and call
+    #b_tree_search on that range
     if sum1 < sum2:
         if sum1 < sum3:
             num1 = b_tree_search(list, first, middle1)
@@ -205,6 +212,8 @@ def b_tree_search(list, first, last):
     else:
         num1 = b_tree_search(list, middle4, last)
     
+    #determine if there is a remainder for this call
+    #which num is smaller and set it to num1
     if has_two:
         if list[num1] < list[num2]:
             if list[num1] > list[num3]:
@@ -216,14 +225,17 @@ def b_tree_search(list, first, last):
     elif has_one:
         if list[num1] > list[num2]:
             num1 = num2
-            
+    
+    #return num1 to previous call
     return num1
     
 def random_func():
     updown = random.random()
-    if(updown > .33):
+    if(updown > .5):
+        sleep(.5)
         return True
     else:
+        sleep(.5)
         return False
 
 if __name__ == '__main__':
