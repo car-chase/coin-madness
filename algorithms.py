@@ -231,11 +231,12 @@ def b_tree_search(list, first, last):
     
 def random_func():
     updown = random.random()
+    print("Random: ", updown)
     if(updown > .5):
-        sleep(.5)
+        sleep(random.random())
         return True
     else:
-        sleep(.5)
+        sleep(random.random())
         return False
 
 if __name__ == '__main__':
@@ -258,11 +259,11 @@ if __name__ == '__main__':
         
     # Create an array that randomly has a fake coin at a random position
     if(random_func()):
-        fakeWeight = weight
+        fakeWeight = weight - 1
     else:
         fakeWeight = weight + 1
 
-    coins = createCoins(size, weight, weight + 1, random_func())
+    coins = createCoins(size, weight, fakeWeight, random_func())
     print("Binary Search: ", binary_search(coins, 0, size - 1, counterfeit(coins)))
     print("\n\n")
     print("B_tree_search: ", b_tree_search(createCoins(size, weight, weight -1, True), 0, size - 1))
