@@ -23,10 +23,11 @@ def create_coins(size, weight, fakeWeight, has_fake):
     for i in range(0, size):
         if i == rand and has_fake:
             coins.append(fakeWeight)
-            print("Appended Fake Coin At: ", i)
+            print("Appended Fake Coin At Index: ", i)
         else:
             coins.append(weight)
     # Return the list of coins
+    print("create_coins() ran successfully, coin list created.")
     return coins
 
 
@@ -58,11 +59,11 @@ def counterfeit(coins):
     w3 = sum(i for i in s3)
     # If one group weighs more than the rest, we know that there is a heavier fake coin
     if (w1 > w2 and w1 > w3) or (w2 > w1 and w2 > w3) or (w3 > w1 and w3 > w2):
-        print("Coin is heavier")
+        print("counterfeit() found that the coin is heavier")
         return 1
     # If one group weighs less than the rest, we know that there is a lighter fake coin
     elif (w1 < w2 and w1 < w3) or (w2 < w1 and w2 < w3) or (w3 < w1 and w3 < w2):
-        print("Coin is lighter")
+        print("counterfeit() found that the coin is lighter")
         return -1
     # Otherwise, we have to check the leftover coins (if they even exist)
     else:
@@ -70,13 +71,13 @@ def counterfeit(coins):
         w4 = sum(i for i in s4)
         wr = sum(i for i in r)
         if w4 < wr:
-            print("Coin is heavier")
+            print("counterfeit() found that the coin is heavier")
             return 1
         elif w4 > wr:
-            print("Coin is lighter")
+            print("counterfeit() found that the coin is lighter")
             return -1
         else:
-            print("No fake coin")
+            print("counterfeit() found that there is no fake coin")
             return 0
 
 
@@ -318,9 +319,19 @@ if __name__ == '__main__':
     else:
         fakeWeight = weight - 1
 
+    # Print the real weight and fake weight
     print("Real:", weight, "Fake:", fakeWeight)
-    counterfeit(create_coins(size, weight, fakeWeight, True))
-    find_stack(create_coins(size, weight, weight + 1, True))
+
+    # Create the list of coins to use
+    coins_list = create_coins(size, weight, fakeWeight, True)
+
+    # Call counterfeit() to determine whether or not there is a fake coin
+    counterfeit(coins_list)
+
+    # Call the O(n) search function find_stack() to find which index contains the stack of fake coins
+    # This call is for problem 1 (Brute Force Solution)
+    print("Problem 1 Start: ")
+    find_stack(coins_list)
     print("\n")
     print("Binary Search: ", binary_search(create_coins(size, weight, weight - 1, True), 0, size - 1, -1))
     print("\n")
