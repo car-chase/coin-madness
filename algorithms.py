@@ -50,9 +50,10 @@ def counterfeit(coins):
     # If there are leftover coins after dividing the list by 3, we must create a "leftover" list
     if len(coins) % 3 == 1:
         r = coins[n - 1: n]
-
-    if len(coins) % 3 == 2:
+    elif len(coins) % 3 == 2:
         r = coins[n - 2: n]
+    else:
+        r = []
     # Find the sum of the weights for each of the sub arrays
     w1 = sum(i for i in s1)
     w2 = sum(i for i in s2)
@@ -254,7 +255,7 @@ def b_tree_search(input_list, first, last):
     middle3 = int(last - (list_range) / 3)
     middle4 = int(last - (list_range - 2) / 3)
     # print("First: ", first, "\tmiddle1: ", middle1, "\nmiddle2: ", middle2, "\tmiddle3: ", middle3, "\nmiddle4: ",
-    # middle4, "\tLast: ", last)
+    #        middle4, "\tLast: ", last)
 
     # sum the list values including and between the two index ranges
     sum1 = sum_list(input_list, first, middle1)
@@ -309,11 +310,22 @@ def random_func():
         sleep(random.random())
         return False
 
+def problem3_search(input_list, first_index, last_index):
+    """
+    Search algorithm to find the counterfeit coin for a given list.
+    :param input_list: The list to search through.
+    :param first_index: The index to start at for searching through the list.
+    :param last_index: The index to stop searching at.
+    :return:
+    """
 
 if __name__ == '__main__':
-    size = 1000000
+    # Create size and weight variables, size == number of coins to put into a list, weight == weight of a genuine coin
+    size = 24
     weight = 10
+    # Originally initialize fakeWeight as the same weight as a real coin
     fakeWeight = weight
+    # Change fakeWeight based on the result of random_func()
     if random_func():
         fakeWeight = weight + 1
     else:
@@ -322,7 +334,7 @@ if __name__ == '__main__':
     # Print the real weight and fake weight
     print("Real:", weight, "Fake:", fakeWeight)
 
-    # Create the list of coins to use
+    # Create the list of coins to use, WILL contain a fake (for problem 1)
     coins_list = create_coins(size, weight, fakeWeight, True)
 
     # Call counterfeit() to determine whether or not there is a fake coin
@@ -338,13 +350,14 @@ if __name__ == '__main__':
     print("Binary Search: ", binary_search(create_coins(size, weight, weight + 1, True), 0, size - 1, 1))
     print("\n")
 
+    # Start Problem 3 (Must have a fake coin somewhere)
     # Create an array that randomly has a fake coin at a random position
     if random_func():
         fakeWeight = weight - 1
     else:
         fakeWeight = weight + 1
 
-    coins = create_coins(size, weight, fakeWeight, random_func())
+    coins = create_coins(size, weight, 9, True)
     print("Binary Search Result: ", binary_search(coins, 0, size - 1, counterfeit(coins)))
     print("\n\n")
-    print("B_tree_search Result: ", b_tree_search(create_coins(size, weight, weight - 1, True), 0, size - 1))
+    print("B_tree_search Result: ", b_tree_search(coins, 0, size - 1))
