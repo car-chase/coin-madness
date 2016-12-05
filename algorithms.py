@@ -190,38 +190,57 @@ def binary_search(input_list, first, last, fake):
     return num1
 
 
-def b_tree_search(input_list, first, last):
+def b_tree_search(input_list, first, last, fake):
     """
     :param input_list: The list of coins to do the search on
     :param first: The first index to include in the b-tree search
     :param last: The last index to include in the b-tree search
     :return:
     """
+    if fake == 0:
+        return -2
+
     list_range = last - first
     # Check if the range is small enough to compare and return (if there are only 3 values in the list)
     if list_range == 2:
-        # If first index is less than BOTH the 2nd index AND 3rd index, return the first index
+        # If first index is less than 2nd index...
         if input_list[first] < input_list[first + 1]:
-            if input_list[first] < input_list[last]:
+            # If fake shows a light coin, and first is less than the last as well as the 2nd, then return first
+            if input_list[first] < input_list[last] and fake == -1:
+                print("Coin is light!")
                 return first
-            # If first index is less than the 2nd index but not the 3rd...
-            else:
-                # If 2nd index is less than the 3rd, return the 2nd index
-                if input_list[first + 1] < input_list[last]:
-                    return first + 1
-                # Otherwise, return the last (3rd) index
-                else:
-                    return last
-        else:
-            if input_list[first + 1] < input_list[last]:
+            # If first is equal to last and we're looking for a heavier coin, return the 2nd index
+            elif input_list[first] == input_list[last] and fake == 1:
+                print("Coin is heavy!")
                 return first + 1
-            else:
+            # If first index is less than the 2nd index but not the 3rd...
+        # If first is heavier than 2nd...
+        elif input_list[first] > input_list[first + 1]:
+            # If first is heavier than last, and fake is searching for a heavy, return first
+            if input_list[first] > input_list[last] and fake == 1:
+                print("Coin is heavy!")
+                return first
+            # If the first index equals the last, then the 2nd is light, return 2nd index
+            elif input_list[first] == input_list[last] and fake == -1:
+                print("Coin is light!")
+                return input_list[first + 1]
+        # If the first index == 2nd index, we know the fake is in the 3rd index
+        else:
+            if input_list[first + 1] < input_list[last] and fake == -1:
+                print("Coin is light!")
                 return last
+            else:
+                print("Coin is heavy!")
+                return last
+
     elif list_range == 1:
         if input_list[first] < input_list[last]:
-            return first
-        else:
-            return last
+            # If fake shows that it is lighter, then return the lighter coin
+            if fake == -1:
+                return first
+            else:
+                return last
+
     elif list_range == 0:
         return last
     elif list_range < 0:
@@ -241,12 +260,14 @@ def b_tree_search(input_list, first, last):
         first += 1
         num3 = first
         first += 1
+        list_range -= 2
         # print("Num2: ", num2, "\tNum3: ", num3)
 
     elif list_range % 3 == 0:
         has_one = True
         num2 = first
         first += 1
+        list_range -= 1
         # print("Num2: ", num2)
 
     # find middle values of the index range
@@ -264,31 +285,55 @@ def b_tree_search(input_list, first, last):
 
     # print("Sum1: ", sum1, "\tSum2: ", sum2, "\tSum3: ", sum3)
 
-    # determine which sum value is smaller (if one is) and call
+    # Determine which sum value is smaller (if one is) and call
     # b_tree_search on that range
-    if sum1 < sum2:
-        if sum1 < sum3:
-            num1 = b_tree_search(input_list, first, middle1)
+    if fake == -1:
+        if sum1 < sum2:
+            if sum1 < sum3:
+                num1 = b_tree_search(input_list, first, middle1, fake)
+            else:
+                num1 = b_tree_search(input_list, middle4, last, fake)
+        elif sum2 < sum3:
+            num1 = b_tree_search(input_list, middle2, middle3, fake)
         else:
-            num1 = b_tree_search(input_list, middle4, last)
-    elif sum2 < sum3:
-        num1 = b_tree_search(input_list, middle2, middle3)
-    else:
-        num1 = b_tree_search(input_list, middle4, last)
+            num1 = b_tree_search(input_list, middle4, last, fake)
+    elif fake == 1:
+        if sum1 > sum2:
+            if sum1 > sum3:
+                num1 = b_tree_search(input_list, first, middle1, fake)
+            else:
+                num1 = b_tree_search(input_list, middle4, last, fake)
+        elif sum2 > sum3:
+            num1 = b_tree_search(input_list, middle2, middle3, fake)
+        else:
+            num1 = b_tree_search(input_list, middle4, last, fake)
 
     # determine if there is a remainder for this call
     # which num is smaller and set it to num1
     if has_two:
-        if input_list[num1] < input_list[num2]:
-            if input_list[num1] > input_list[num3]:
+        if fake == -1:
+            if input_list[num1] < input_list[num2]:
+                if input_list[num1] > input_list[num3]:
+                    num1 = num3
+            elif input_list[num2] < input_list[num3]:
+                num1 = num2
+            else:
                 num1 = num3
-        elif input_list[num2] < input_list[num3]:
-            num1 = num2
-        else:
-            num1 = num3
+        if fake == 1:
+            if input_list[num1] > input_list[num2]:
+                if input_list[num1] < input_list[num3]:
+                    num1 = num3
+            elif input_list[num2] > input_list[num3]:
+                num1 = num2
+            else:
+                num1 = num3
     elif has_one:
-        if input_list[num1] > input_list[num2]:
-            num1 = num2
+        if fake == -1:
+            if input_list[num1] > input_list[num2]:
+                num1 = num2
+        if fake == 1:
+            if input_list[num1] < input_list[num2]:
+                num1 = num2
 
     # return num1 to previous call
     return num1
@@ -310,14 +355,19 @@ def random_func():
         sleep(random.random())
         return False
 
-def problem3_search(input_list, first_index, last_index):
+
+def determine_fake():
     """
-    Search algorithm to find the counterfeit coin for a given list.
-    :param input_list: The list to search through.
-    :param first_index: The index to start at for searching through the list.
-    :param last_index: The index to stop searching at.
-    :return:
+    Simple function to determine if there should be a fake coin for problem 3; small chance of no fake.
+    :return: Boolean to determine whether or not to include a fake coin for problem 3
+                    True == include fake
+                    False == do not include fake
     """
+    fake_num = random.random()
+    print("Random for fake coin: ", fake_num)
+    if fake_num > .85:
+        return False
+    return True
 
 if __name__ == '__main__':
     # Create size and weight variables, size == number of coins to put into a list, weight == weight of a genuine coin
@@ -334,30 +384,35 @@ if __name__ == '__main__':
     # Print the real weight and fake weight
     print("Real:", weight, "Fake:", fakeWeight)
 
-    # Create the list of coins to use, WILL contain a fake (for problem 1)
-    coins_list = create_coins(size, weight, fakeWeight, True)
+    # Create list of coins for each problem (since each problem varies slightly)
 
-    # Call counterfeit() to determine whether or not there is a fake coin
-    counterfeit(coins_list)
+    coins_prob1a = create_coins(size, weight, fakeWeight, True)
+    coins_prob1b = create_coins(size, weight, 11, True)
+    # Problem 2 will always have a fake, lighter coin
+    coins_prob2 = create_coins(size, weight, 9, True)
+    print("\n")
 
     # Call the O(n) search function find_stack() to find which index contains the stack of fake coins
     # This call is for problem 1 (Brute Force Solution)
     print("Problem 1 Start: ")
-    find_stack(coins_list)
+    counterfeit(coins_prob1a)
+    find_stack(coins_prob1a)
+    """
     print("\n")
     print("Binary Search: ", binary_search(create_coins(size, weight, weight - 1, True), 0, size - 1, -1))
     print("\n")
     print("Binary Search: ", binary_search(create_coins(size, weight, weight + 1, True), 0, size - 1, 1))
     print("\n")
+    """
+    print("End Problem 1\n")
+    print("Problem 2 Start: ")
+    print("Divide-into-two (binary search) result: ", binary_search(coins_prob2, 0, size - 1, counterfeit(coins_prob2)))
+    print("Divide-into-three result: ", b_tree_search(coins_prob2, 0, size - 1, counterfeit(coins_prob2)))
+    print("End Problem 2")
 
-    # Start Problem 3 (Must have a fake coin somewhere)
-    # Create an array that randomly has a fake coin at a random position
-    if random_func():
-        fakeWeight = weight - 1
-    else:
-        fakeWeight = weight + 1
+    # Start Problem 3 (May not have a fake coin)
+    # Create a new list of coins with the same size, same fake weight, but with the possibility of NOT having a fake
+    coins_prob3 = create_coins(size, weight, fakeWeight, determine_fake())
+    print("Start Problem 3: ")
+    print("Fake index (if exists): ", b_tree_search(coins_prob3, 0, size - 1, counterfeit(coins_prob3)))
 
-    coins = create_coins(size, weight, 9, True)
-    print("Binary Search Result: ", binary_search(coins, 0, size - 1, counterfeit(coins)))
-    print("\n\n")
-    print("B_tree_search Result: ", b_tree_search(coins, 0, size - 1))
