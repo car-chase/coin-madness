@@ -27,7 +27,6 @@ def create_coins(size, weight, fakeWeight, has_fake):
         else:
             coins.append(weight)
     # Return the list of coins
-    print("create_coins() ran successfully, coin list created.")
     return coins
 
 
@@ -371,7 +370,7 @@ def determine_fake():
 
 if __name__ == '__main__':
     # Create size and weight variables, size == number of coins to put into a list, weight == weight of a genuine coin
-    size = 24
+    size = 10000
     weight = 10
     # Originally initialize fakeWeight as the same weight as a real coin
     fakeWeight = weight
@@ -382,37 +381,40 @@ if __name__ == '__main__':
         fakeWeight = weight - 1
 
     # Print the real weight and fake weight
-    print("Real:", weight, "Fake:", fakeWeight)
+    print("Real:", weight, "Fake:", fakeWeight, "\n")
 
     # Create list of coins for each problem (since each problem varies slightly)
-
+    print("Creating Problem 1a List...")
     coins_prob1a = create_coins(size, weight, fakeWeight, True)
+    print("Problem 1a List Created.\n")
+    print("Creating Problem 1b list...")
     coins_prob1b = create_coins(size, weight, 11, True)
+    print("Problem 1b list created.\n")
+    print("Creating Problem 2 List...")
     # Problem 2 will always have a fake, lighter coin
     coins_prob2 = create_coins(size, weight, 9, True)
-    print("\n")
+    print("Problem 2 List created.\n")
+    # Create a new list of coins with the same size, same fake weight, but with the possibility of NOT having a fake
+    print("Creating Problem 3 List...")
+    coins_prob3 = create_coins(size, weight, fakeWeight, determine_fake())
+    print("Problem 3 List created.\n")
 
     # Call the O(n) search function find_stack() to find which index contains the stack of fake coins
     # This call is for problem 1 (Brute Force Solution)
     print("Problem 1 Start: ")
     counterfeit(coins_prob1a)
-    find_stack(coins_prob1a)
-    """
-    print("\n")
-    print("Binary Search: ", binary_search(create_coins(size, weight, weight - 1, True), 0, size - 1, -1))
-    print("\n")
-    print("Binary Search: ", binary_search(create_coins(size, weight, weight + 1, True), 0, size - 1, 1))
-    print("\n")
-    """
+    find_stack(coins_prob1b)
     print("End Problem 1\n")
     print("Problem 2 Start: ")
     print("Divide-into-two (binary search) result: ", binary_search(coins_prob2, 0, size - 1, counterfeit(coins_prob2)))
     print("Divide-into-three result: ", b_tree_search(coins_prob2, 0, size - 1, counterfeit(coins_prob2)))
-    print("End Problem 2")
+    print("End Problem 2\n")
 
     # Start Problem 3 (May not have a fake coin)
-    # Create a new list of coins with the same size, same fake weight, but with the possibility of NOT having a fake
-    coins_prob3 = create_coins(size, weight, fakeWeight, determine_fake())
     print("Start Problem 3: ")
-    print("Fake index (if exists): ", b_tree_search(coins_prob3, 0, size - 1, counterfeit(coins_prob3)))
-
+    is_there_a_fake = counterfeit(coins_prob3)
+    if is_there_a_fake:
+        print("Fake index: ", b_tree_search(coins_prob3, 0, size - 1, is_there_a_fake))
+    else:
+        print("There is no fake coin.")
+    print("End Problem 3")
